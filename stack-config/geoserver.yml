@@ -1,0 +1,136 @@
+version: "3.4"
+
+# #############################################################
+# Geoserver Manager and Workers - Generate Tiles
+# #############################################################
+
+# VOLUMES
+volumes:
+  log_data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.39.8,rw
+      device: ":/media/scratch34/log_data"
+#  geo_data:
+#    driver: local
+#    driver_opts:
+#      type: nfs
+#      o: addr=192.168.39.8,rw
+#      device: ":/media/scratch34/geo_datasets"
+  geo_data2:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: "/home/cagis/local_geo_datasets"
+  gs_data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.39.8,rw
+      device: ":/media/scratch34/gs_data"
+  gs_startup:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.39.8,rw
+      device: ":/media/scratch34/gs_startup"
+# #############################################################
+services:
+  gsman:
+    image: kartoza/geoserver:2.15.2
+    volumes:
+      - type: volume
+        source: gs_startup
+        target: /scripts
+        volume:
+          nocopy: true
+      - type: volume
+        source: log_data
+        target: /mnt/log_data
+        volume:
+          nocopy: true
+      - type: volume
+        source: geo_data2
+        target: /mnt/geo_data
+        volume:
+          nocopy: true
+      - type: volume
+        source: gs_data
+        target: /opt/geoserver/data_dir
+#        volume:
+#          nocopy: true
+#    ports:
+#      - "8046:8080"
+    environment:
+      - GEOSERVER_DATA_DIR=/opt/geoserver/data_dir
+      - GEOSERVER_LOG_LOCATION=/mnt/log_data/{{.Service.ID}}.log
+      - ENABLE_JSONP=true
+      - MAX_FILTER_RULES=20
+      - OPTIMIZE_LINE_WIDTH=false
+#      - FOOTPRINTS_DATA_DIR=/opt/footprints_dir
+#      - GEOWEBCACHE_CACHE_DIR=/opt/geoserver/gwc
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.frontend.rule=HostRegexp:{catchall:.*}"
+        - "traefik.frontend.priority=1"
+        - "traefik.frontend.entryPoints=gsmanagers"
+        - "traefik.port=8080"
+        - "traefik.backend=gsman"
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+#          - node.role == manager
+#          - node.hostname == topaz318ln200
+          - node.hostname == topaz318ln202
+
+# ###########################################
+  gswork:
+    image: kartoza/geoserver:2.15.2
+    volumes:
+    volumes:
+      - type: volume
+        source: gs_startup
+        target: /scripts
+        volume:
+          nocopy: true
+      - type: volume
+        source: log_data
+        target: /mnt/log_data
+        volume:
+          nocopy: true
+      - type: volume
+        source: geo_data2
+        target: /mnt/geo_data
+        volume:
+          nocopy: true
+      - type: volume
+        source: gs_data
+        target: /opt/geoserver/data_dir
+#        volume:
+#          nocopy: true
+#    ports:
+#      - "8048:8080"
+    environment:
+      - GEOSERVER_DATA_DIR=/opt/geoserver/data_dir
+      - GEOSERVER_LOG_LOCATION=/mnt/log_data/{{.Service.ID}}.log
+      - ENABLE_JSONP=true
+      - MAX_FILTER_RULES=20
+      - OPTIMIZE_LINE_WIDTH=false
+#      - FOOTPRINTS_DATA_DIR=/opt/footprints_dir
+#      - GEOWEBCACHE_CACHE_DIR=/opt/geoserver/gwc
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.frontend.rule=HostRegexp:{catchall:.*}"
+#        - "traefik.frontend.priority=1"
+        - "traefik.frontend.entryPoints=gsworkers,gsworkers2"
+        - "traefik.port=8080"
+        - "traefik.backend=gswork"
+#        - "traefik.backend.loadbalancer.stickiness=true" # Enable stickiness to allow login to gs workers. Based on cookies. Disable for load balancing by-request
+        - "traefik.backend.loadbalancer.method=wrr"
+      mode: replicated
+      replicas: 1

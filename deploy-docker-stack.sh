@@ -1,0 +1,1 @@
+docker stack deploy -c stack-config/viz.yml -c stack-config/apache.yml -c stack-config/geoserver.yml -c stack-config/traefik.yml geo

@@ -1,0 +1,40 @@
+version: "3.4"
+
+# #############################################################
+# Apache Web Server
+# #############################################################
+
+volumes:
+  www_data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.39.8,rw
+      device: ":/media/scratch34/www_data"
+
+# #############################################################
+
+services:
+  apache:
+    image: php:7.2-apache
+    user: "1001:1001"
+#    hostname: "{{.Node.Hostname}}-{{.Service.Name}}-{{.Task.Slot}}"
+    hostname: "{{.Service.Name}}-{{.Task.Slot}}"
+    volumes:
+      - type: volume
+        source: www_data
+        target: /var/www/html
+        volume:
+          nocopy: true
+    sysctls:
+      - net.ipv4.ip_unprivileged_port_start=0
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.frontend.rule=HostRegexp:{catchall:.*}"
+        - "traefik.frontend.priority=100"
+        - "traefik.frontend.entryPoints=webapp"
+        - "traefik.port=80"
+        - "traefik.backend=apache"
+      mode: replicated
+      replicas: 1

@@ -1,0 +1,32 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: remove bad docker repo
+      shell: rm -rf /etc/apt/sources.list.d/docker.list
+      ignore_errors: False
+
+    - name: disable unattended-upgrades
+      shell: systemctl disable unattended-upgrades.service
+      ignore_errors: False
+
+    - name: stop unattended-upgrades
+      shell: systemctl stop unattended-upgrades.service
+      ignore_errors: False
+
+    - name: install packages
+      apt:
+        name: "{{ thesePKGS }}"
+        update_cache: yes
+      vars:
+        thesePKGS:
+          - python3.7
+          - iotop
+          - htop
+          - git
+          - python3-pip
+          - nfs-common
+
+    - name: Update all packages to the latest version
+      apt:
+        upgrade: dist

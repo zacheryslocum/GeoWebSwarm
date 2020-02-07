@@ -1,0 +1,13 @@
+---
+- name: install docker
+  hosts: all
+  become: yes
+
+  vars:
+    docker_users: [cagis]
+    pip_install_packages:
+      - name: docker
+
+  roles:
+    - geerlingguy.pip
+    - geerlingguy.docker

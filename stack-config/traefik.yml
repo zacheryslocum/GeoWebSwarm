@@ -1,0 +1,52 @@
+version: "3.4"
+
+volumes:
+  log_data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.39.8,rw
+      device: ":/media/scratch34/log_data"
+
+services:
+  traefik:
+    image: "traefik:1.7.14"
+    command:
+    - "--docker"
+    - "--docker.domain=traefik"
+    - "--docker.watch"
+    - "--api"
+    - "--api.entryPoint=traefik" # assign dashboard to correct entrypoint
+    - "--docker.swarmmode"
+    - "--docker.exposedbydefault=true"
+    - "--logLevel=DEBUG"
+    - "--traefikLog.filePath=/log_data/traefik-system.log"
+    - "--accessLog.filePath=/log_data/traefik-access.log"
+    - "--entryPoints=Name:http Address::8000" # default
+    - "--entryPoints=Name:traefik Address::8006" # dashboard
+    - "--entryPoints=Name:webapp Address::8008"
+    - "--entryPoints=Name:gsmanagers Address::8010"
+    - "--entryPoints=Name:gsworkers Address::8012"
+    - "--entryPoints=Name:gsworkers2 Address::8014"
+    - "--defaultentrypoints=http"
+    ports:
+      - "8000:8000" # default entrypoint
+      - "8006:8006" # traefik dashboard
+      - "8008:8008" # webapp
+      - "8010:8010" # gsmanagers
+      - "8012:8012" # gsworkers
+      - "8014:8014" # gsworkers2
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - type: volume
+        source: log_data
+        target: /log_data
+        volume:
+          nocopy: true
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: 
+          - node.role == manager
+          

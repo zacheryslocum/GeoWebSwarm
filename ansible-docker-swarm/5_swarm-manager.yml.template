@@ -1,0 +1,8 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+
+    - name: init swarm
+      shell: docker swarm init --advertise-addr IPADDRESS
+      ignore_errors: False

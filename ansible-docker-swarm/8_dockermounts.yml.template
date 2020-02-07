@@ -1,0 +1,15 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: create systemd dir
+      shell: mkdir -p /etc/systemd/system/docker.service.d/
+      ignore_errors: False
+
+    - name: clear mount propagation
+      shell: echo -e "[Service]\nMountFlags=shared\n" > /etc/systemd/system/docker.service.d/clear_mount_propagation_flags.conf
+      ignore_errors: False
+
+    - name: restart docker daemon
+      shell: systemctl restart docker.service
+      ignore_errors: False

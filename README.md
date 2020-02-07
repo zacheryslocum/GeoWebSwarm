@@ -1,2 +1,2 @@
-# pub-webgeoswarm
-Published copy of WebGeoSwarm
+# pub-geowebswarm
+Published copy of GeoWebSwarm

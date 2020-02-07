@@ -1,0 +1,11 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+
+    - name: init swarm
+      shell: docker swarm join --token TOKEN IPADDRESS:2377
+      ignore_errors: False
+      register: out
+    
+    - debug: var=out.stdout_lines

@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Setup Geoserver from scratch using REST API
+
+# Variables
+GsURL=http://IPADDRESS:8046/geoserver/rest
+adminUser=admin
+adminDefaultPass=geoserver
+adminNewPass=PASSWORD
+textXML="Content-type: text/xml"
+textPlain="Content-type: text/plain"
+
+# #################################################
+# Commands
+# #################################################
+
+# Change admin password
+curl -v -u ${adminUser}:${adminDefaultPass} -XPUT -H ${textXML} -d "<?xml version=\"1.0\" encoding=\"UTF-8\"?><userPassword>\t<newPassword>${adminNewPass}</newPassword></userPassword>" "${GsURL}/security/self/password"
+
+# Configure Logging
+#curl -v -u ${adminUser}:${adminNewPass} -XGET -H ${textXML} "${GsURL}/global"
+
+# Create new workspace
+#curl -v -u ${adminUser}:${adminNewPass} -XPOST -H ${textXML} -d "<workspace><name>geoswarm</name></workspace>" "${GsURL}/geoserver/rest/workspaces"
+
+# Configure folder of shapefiles as source
+#curl -v -u ${adminUser}:${adminNewPass} -XPUT -H ${textPlain} -d "file:///opt/geoserver/utility_datasets/Electric_Power_Transmission_Lines" "${GsURL}/workspaces/utility/datastores/electranslines/external.shp?configure=all"
+
+#curl -v -u ${adminUser}:${adminNewPass} -XPUT -H ${textPlain} -d "file:///opt/geoserver/utility_datasets/HGL_Pipelines_US_EIA" "${GsURL}/workspaces/utility/datastores/hglpipelines/external.shp?configure=all"
+
+#curl -v -u ${adminUser}:${adminNewPass} -XPUT -H ${textPlain} -d "file:///opt/geoserver/utility_datasets/CrudeOil_Pipelines_US_EIA" "${GsURL}/workspaces/utility/datastores/crudeoilpipelines/external.shp?configure=all"
+
+#curl -v -u ${adminUser}:${adminNewPass} -XPUT -H ${textPlain} -d "file:///opt/geoserver/utility_datasets/US_States" "${GsURL}/workspaces/utility/datastores/usstates/external.shp?configure=all"

@@ -1,0 +1,131 @@
+table {
+    table-layout: fixed;
+}
+
+table th, table td {
+    /*overflow: hidden;*/
+    /*text-overflow: ellipsis;*/
+    word-wrap: break-word;
+}
+
+
+.btn-group.special {
+    display: flex;
+}
+
+.special .btn {
+    flex: 1
+}
+
+.ol-scale-line {
+    bottom: 1.5em !important;
+    left: 1.25em !important;
+    padding: 0.35 !important;
+    position: absolute !important;
+    background: rgba(0, 60, 100, 0.6);
+    border: 1px solid #aaa;
+    border-radius: 3px;
+}
+
+.ol-scale-line-inner {
+    font-size: 1.0em;
+    color: #efefef;
+}
+
+body {
+    color: black;
+}
+
+.img-border {
+    border: #343a40 solid 1px;
+    padding: 0;
+}
+
+
+.fullHscroll {
+    height: 78vh;
+    overflow-y: scroll;
+}
+.fullHscrollAlt {
+    height: 100%;
+    overflow-y: scroll;
+}
+
+
+/* genTable.php's tables needed no word-wrapping times and some extra whitespace */
+/*table.dataTable tbody td {*/
+    /*white-space:nowrap;*/
+    /*vertical-align: top;*/
+    /*padding-left: 0.25em;*/
+    /*padding-right: 0.25em;*/
+/*}*/
+
+
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    /*position: relative;*/
+    min-height: 90%;
+}
+
+body {
+    /*margin-top: 10vh;*/
+    /* Margin bottom by footer height */
+    /*margin-bottom: -1vh;*/
+    margin-bottom: 0vh; /* set to zero to fix unnecessary scrolling */
+    /*margin-bottom: 6vh;*/
+}
+
+.footer {
+    width: 100%;
+}
+/* -------------------------------------------------- */
+
+
+
+/*Height Adjustments*/
+.heightNav {
+    /*height: 8vh;*/
+    min-height: 25px;
+}
+
+
+.heightWindow {
+    height: 88vh;
+}
+
+.heightWindowShort {
+    height: 66vh;
+}
+
+.heightWindowHalf {
+    height: 44vh;
+}
+
+.heightFooter {
+    height: 4vh;
+    min-height: 1.5em;
+
+}
+
+.widthMap {
+    max-width: 75vw;
+}
+.widthData {
+    max-width: 25vw;
+}
+
+#navLogo {
+    /*source: h=180px, w=236px*/
+    /*height: 4vh;*/
+    height: 3em;
+    /*min-height: 40px;*/
+}
+
+
+.text-yellow {
+    color: #F1C40F;
+}
+
+
